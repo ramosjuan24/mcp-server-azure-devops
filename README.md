@@ -56,7 +56,7 @@ Be sure you are logged in to Azure CLI with `az login` then add the following:
   "mcpServers": {
     "azureDevOps": {
       "command": "npx",
-      "args": ["-y", "@tiberriver256/mcp-server-azure-devops"],
+      "args": ["-y", "@ramosjuan24/mcp-server-azure-devops"],
       "env": {
         "AZURE_DEVOPS_ORG_URL": "https://dev.azure.com/your-organization",
         "AZURE_DEVOPS_AUTH_METHOD": "azure-identity",
@@ -74,7 +74,7 @@ Be sure you are logged in to Azure CLI with `az login` then add the following:
   "mcpServers": {
     "azureDevOps": {
       "command": "npx",
-      "args": ["-y", "@tiberriver256/mcp-server-azure-devops"],
+      "args": ["-y", "@ramosjuan24/mcp-server-azure-devops"],
       "env": {
         "AZURE_DEVOPS_ORG_URL": "https://dev.azure.com/your-organization",
         "AZURE_DEVOPS_AUTH_METHOD": "pat",
@@ -173,7 +173,7 @@ The Azure DevOps MCP server provides a variety of tools for interacting with Azu
 - `search_work_items`: Search for work items across projects in Azure DevOps
 
 ### Pipelines Tools
-
+- `create_pipelines`: create pipelines in a project @Juan Ramos
 - `list_pipelines`: List pipelines in a project
 - `get_pipeline`: Get details of a specific pipeline
 - `trigger_pipeline`: Trigger a pipeline run with customizable parameters
@@ -194,9 +194,6 @@ For comprehensive documentation on all tools, see the [Tools Documentation](docs
 
 Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
 
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=tiberriver256/mcp-server-azure-devops&type=Date)](https://www.star-history.com/#tiberriver256/mcp-server-azure-devops&Date)
 
 ## License
 
