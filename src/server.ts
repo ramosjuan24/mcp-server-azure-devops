@@ -82,10 +82,10 @@ import {
 import {
   ListPipelinesSchema,
   listPipelines,
-  GetPipelineSchema,
   getPipeline,
-  TriggerPipelineSchema,
   triggerPipeline,
+  GetPipelineSchema,
+  TriggerPipelineSchema,
 } from './features/pipelines';
 
 import { GitVersionType } from 'azure-devops-node-api/interfaces/GitInterfaces';

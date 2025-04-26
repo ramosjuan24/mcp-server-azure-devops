@@ -7,5 +7,18 @@ import { getPipeline } from './get-pipeline/feature';
 import { triggerPipeline } from './trigger-pipeline/feature';
 import { createPipeline } from './create-pipeline/feature';
 
-// Export features
-export { listPipelines, getPipeline, triggerPipeline, createPipeline };
+// Import schemas
+import { ListPipelinesSchema } from './list-pipelines/schema';
+import { GetPipelineSchema } from './get-pipeline/schema';
+import { TriggerPipelineSchema } from './trigger-pipeline/schema';
+
+// Export features and schemas
+export {
+  listPipelines,
+  getPipeline,
+  triggerPipeline,
+  createPipeline,
+  ListPipelinesSchema,
+  GetPipelineSchema,
+  TriggerPipelineSchema,
+};
