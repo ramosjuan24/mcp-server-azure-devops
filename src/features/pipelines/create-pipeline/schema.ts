@@ -9,7 +9,7 @@ export const CreatePipelineSchema = z.object({
     path: z.string(),
     repository: z.object({
       id: z.string(),
-      type: z.enum(['git', 'github', 'bitbucket']),
+      type: z.enum(['git', 'github', 'bitbucket', 'TfsGit', 'azureReposGit']),
       name: z.string(),
       defaultBranch: z.string().optional(),
     }),
