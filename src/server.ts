@@ -84,6 +84,7 @@ import {
   listPipelines,
   getPipeline,
   triggerPipeline,
+  createPipeline,
   GetPipelineSchema,
   TriggerPipelineSchema,
 } from './features/pipelines';
@@ -101,6 +102,8 @@ import {
   UpdateWikiPageSchema,
   updateWikiPage,
 } from './features/wikis';
+
+import { CreatePipelineSchema } from './features/pipelines/create-pipeline/schema';
 
 // Create a safe console logging function that won't interfere with MCP protocol
 function safeLog(message: string) {
@@ -198,6 +201,11 @@ export function createAzureDevOpsServer(config: AzureDevOpsConfig): Server {
           inputSchema: zodToJsonSchema(ManageWorkItemLinkSchema),
         },
         // Pipeline tools
+        {
+          name: 'create_pipeline',
+          description: 'Create a new pipeline in a project',
+          inputSchema: zodToJsonSchema(CreatePipelineSchema),
+        },
         {
           name: 'list_pipelines',
           description: 'List pipelines in a project',
@@ -592,6 +600,16 @@ export function createAzureDevOpsServer(config: AzureDevOpsConfig): Server {
         }
 
         // Pipeline tools
+        case 'create_pipeline': {
+          const args = CreatePipelineSchema.parse(request.params.arguments);
+          const result = await createPipeline(connection, {
+            ...args,
+            projectId: args.projectId ?? defaultProject,
+          });
+          return {
+            content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
+          };
+        }
         case 'list_pipelines': {
           const args = ListPipelinesSchema.parse(request.params.arguments);
           const result = await listPipelines(connection, {

@@ -11,6 +11,7 @@ import { createPipeline } from './create-pipeline/feature';
 import { ListPipelinesSchema } from './list-pipelines/schema';
 import { GetPipelineSchema } from './get-pipeline/schema';
 import { TriggerPipelineSchema } from './trigger-pipeline/schema';
+import { CreatePipelineSchema } from './create-pipeline/schema';
 
 // Export features and schemas
 export {
@@ -21,4 +22,5 @@ export {
   ListPipelinesSchema,
   GetPipelineSchema,
   TriggerPipelineSchema,
+  CreatePipelineSchema,
 };
