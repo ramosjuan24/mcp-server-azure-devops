@@ -43,7 +43,7 @@ This directory contains documentation for all tools available in the Azure DevOp
 - [`list_work_items`](./work-items.md#list_work_items) - List work items in a project
 
 ### Pipeline Tools
-
+- [`create_pipeline`](./pipelines.md#create_pipeline) - Create pipelines in a project
 - [`list_pipelines`](./pipelines.md#list_pipelines) - List all pipelines in a project
 - [`get_pipeline`](./pipelines.md#get_pipeline) - Get details of a specific pipeline
 
