@@ -48,7 +48,7 @@ export interface CreatePipelineOptions {
     path: string;
     repository: {
       id: string;
-      type: 'git' | 'github' | 'bitbucket';
+      type: 'git' | 'github' | 'bitbucket' | 'TfsGit' | 'azureReposGit';
       name: string;
       defaultBranch?: string;
     };
