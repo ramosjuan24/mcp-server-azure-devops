@@ -29,6 +29,11 @@ export async function createPipeline(
       },
     };
 
+    console.log(
+      'Pipeline Configuration:',
+      JSON.stringify(pipelineConfiguration, null, 2),
+    );
+
     const result = await pipelinesApi.createPipeline(
       pipelineConfiguration,
       options.projectId,
@@ -36,6 +41,8 @@ export async function createPipeline(
 
     return result;
   } catch (error) {
+    console.error('Error creating pipeline:', error);
+
     if (error instanceof Error) {
       if (error.message.includes('Authentication failed')) {
         throw new AzureDevOpsAuthenticationError(
@@ -47,7 +54,9 @@ export async function createPipeline(
           'Project or repository not found',
         );
       }
+      // Agregar más detalles del error
+      throw new AzureDevOpsError(`Failed to create pipeline: ${error.message}`);
     }
-    throw new AzureDevOpsError('Failed to create pipeline');
+    throw new AzureDevOpsError('Failed to create pipeline: Unknown error');
   }
 }
