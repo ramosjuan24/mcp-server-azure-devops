@@ -24,7 +24,9 @@ export const CreatePipelineSchema = z.object({
       id: z.string().describe('ID of the repository'),
       type: z
         .enum(['git', 'github', 'bitbucket', 'azureReposGit'])
-        .describe('Type of repository'),
+        .describe(
+          'Type of repository (git, github, bitbucket, or azureReposGit)',
+        ),
       name: z.string().describe('Name of the repository'),
       defaultBranch: z
         .string()

@@ -8,6 +8,9 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import dotenv from 'dotenv';
 import { AzureDevOpsConfig } from './shared/types';
 import { AuthenticationMethod } from './shared/auth/auth-factory';
+import { AzureDevOpsClient } from './shared/client/azure-devops-client';
+import { AzureDevOpsAuthenticationError } from './shared/errors/azure-devops-authentication-error';
+import { WebApi } from '@azure/devops-node-api';
 
 /**
  * Normalize auth method string to a valid AuthenticationMethod enum value
@@ -95,3 +98,29 @@ if (require.main === module) {
 
 // Export the server and related components
 export * from './server';
+
+export async function getConnection(
+  config: AzureDevOpsConfig,
+): Promise<WebApi> {
+  try {
+    // Create a client with the appropriate authentication method
+    const client = new AzureDevOpsClient({
+      method: config.authMethod || AuthenticationMethod.AzureIdentity,
+      organizationUrl: config.organizationUrl,
+      personalAccessToken: config.personalAccessToken,
+    });
+
+    // Configurar la versión de la API
+    const webApiClient = await client.getWebApiClient();
+    webApiClient.serverUrl = `${config.organizationUrl}?api-version=7.1`;
+
+    // Test the connection by getting the Core API
+    await webApiClient.getCoreApi();
+
+    return webApiClient;
+  } catch (error) {
+    throw new AzureDevOpsAuthenticationError(
+      `Failed to connect to Azure DevOps: ${error instanceof Error ? error.message : String(error)}`,
+    );
+  }
+}

@@ -39,6 +39,7 @@ export async function deletePipeline(
           `Pipeline with ID ${options.pipelineId} not found`,
         );
       }
+      throw new AzureDevOpsError(`Failed to delete pipeline: ${error.message}`);
     }
     throw new AzureDevOpsError('Failed to delete pipeline');
   }

@@ -51,6 +51,7 @@ export async function createPipeline(
       pipelineConfiguration.variables = options.variables;
     }
 
+    // Create pipeline using the API
     const result = await pipelinesApi.createPipeline(
       pipelineConfiguration,
       options.projectId,
@@ -59,17 +60,50 @@ export async function createPipeline(
     return result;
   } catch (error) {
     if (error instanceof Error) {
-      if (error.message.includes('Authentication failed')) {
+      const errorMessage = error.message;
+      const errorDetails = {
+        message: errorMessage,
+        stack: error.stack,
+        name: error.name,
+        ...(error as any).response?.data,
+        ...(error as any).response?.status,
+        ...(error as any).response?.statusText,
+      };
+
+      const detailedMessage = `Error details: ${JSON.stringify(errorDetails, null, 2)}`;
+
+      if (
+        errorMessage.includes('Authentication') ||
+        errorMessage.includes('Unauthorized') ||
+        errorMessage.includes('401')
+      ) {
         throw new AzureDevOpsAuthenticationError(
-          'Failed to authenticate with Azure DevOps',
+          `Failed to authenticate with Azure DevOps: ${errorMessage}\n${detailedMessage}`,
         );
       }
-      if (error.message.includes('not found')) {
+
+      if (
+        errorMessage.includes('not found') ||
+        errorMessage.includes('does not exist') ||
+        errorMessage.includes('404')
+      ) {
         throw new AzureDevOpsResourceNotFoundError(
-          'Project or repository not found',
+          `Project or repository not found: ${errorMessage}\n${detailedMessage}`,
         );
       }
+
+      if (errorMessage.includes('Validation')) {
+        throw new AzureDevOpsError(
+          `Validation error while creating pipeline: ${errorMessage}\n${detailedMessage}`,
+        );
+      }
+
+      throw new AzureDevOpsError(
+        `Failed to create pipeline: ${errorMessage}\n${detailedMessage}`,
+      );
     }
-    throw new AzureDevOpsError('Failed to create pipeline');
+    throw new AzureDevOpsError(
+      'Failed to create pipeline: Unknown error occurred',
+    );
   }
 }

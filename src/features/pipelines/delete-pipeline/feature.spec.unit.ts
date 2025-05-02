@@ -8,40 +8,37 @@ import {
 
 describe('deletePipeline unit', () => {
   let mockConnection: WebApi;
-  let mockPipelinesApi: any;
+  let mockRestClient: any;
 
   beforeEach(() => {
     jest.resetAllMocks();
 
-    mockPipelinesApi = {
-      deletePipeline: jest.fn(),
+    mockRestClient = {
+      del: jest.fn(),
     };
 
     mockConnection = {
       serverUrl: 'https://dev.azure.com/testorg',
-      getPipelinesApi: jest.fn().mockResolvedValue(mockPipelinesApi),
+      rest: mockRestClient,
     } as unknown as WebApi;
   });
 
   test('should delete a pipeline successfully', async () => {
-    mockPipelinesApi.deletePipeline.mockResolvedValue(undefined);
+    mockRestClient.del.mockResolvedValue(undefined);
 
     await deletePipeline(mockConnection, {
       projectId: 'testproject',
       pipelineId: 1,
     });
 
-    expect(mockConnection.getPipelinesApi).toHaveBeenCalled();
-    expect(mockPipelinesApi.deletePipeline).toHaveBeenCalledWith(
-      'testproject',
-      1,
+    expect(mockRestClient.del).toHaveBeenCalledWith(
+      '/testproject/_apis/pipelines/1',
     );
   });
 
   test('should handle authentication errors', async () => {
-    const authError = new Error('Authentication failed');
-    authError.message = 'Authentication failed: Unauthorized';
-    mockPipelinesApi.deletePipeline.mockRejectedValue(authError);
+    const authError = new Error('Authentication failed: Unauthorized');
+    mockRestClient.del.mockRejectedValue(authError);
 
     await expect(
       deletePipeline(mockConnection, {
@@ -52,9 +49,8 @@ describe('deletePipeline unit', () => {
   });
 
   test('should handle resource not found errors', async () => {
-    const notFoundError = new Error('Not found');
-    notFoundError.message = 'Pipeline not found';
-    mockPipelinesApi.deletePipeline.mockRejectedValue(notFoundError);
+    const notFoundError = new Error('Pipeline not found');
+    mockRestClient.del.mockRejectedValue(notFoundError);
 
     await expect(
       deletePipeline(mockConnection, {
@@ -66,7 +62,7 @@ describe('deletePipeline unit', () => {
 
   test('should wrap general errors in AzureDevOpsError', async () => {
     const testError = new Error('Test API error');
-    mockPipelinesApi.deletePipeline.mockRejectedValue(testError);
+    mockRestClient.del.mockRejectedValue(testError);
 
     await expect(
       deletePipeline(mockConnection, {

@@ -8,7 +8,13 @@ import { IReleaseApi } from 'azure-devops-node-api/ReleaseApi';
 import { ITaskAgentApi } from 'azure-devops-node-api/TaskAgentApi';
 import { ITaskApi } from 'azure-devops-node-api/TaskApi';
 import { AzureDevOpsError, AzureDevOpsAuthenticationError } from '../errors';
-import { AuthConfig, createAuthClient } from './auth-factory';
+import { AuthConfig, AuthenticationMethod } from './auth-factory';
+import {
+  getPersonalAccessTokenHandler,
+  DefaultAzureCredential,
+  BearerCredentialHandler,
+  AzureCliCredential,
+} from '@azure/identity';
 
 /**
  * Azure DevOps Client
@@ -38,13 +44,36 @@ export class AzureDevOpsClient {
     if (!this.clientPromise) {
       this.clientPromise = (async () => {
         try {
-          return await createAuthClient(this.config);
+          let client: WebApi;
+
+          switch (this.config.method) {
+            case AuthenticationMethod.PersonalAccessToken:
+              client = await this.createPatClient();
+              break;
+            case AuthenticationMethod.AzureIdentity:
+              client = await this.createAzureIdentityClient();
+              break;
+            case AuthenticationMethod.AzureCli:
+              client = await this.createAzureCliClient();
+              break;
+            default:
+              throw new AzureDevOpsAuthenticationError(
+                `Unsupported authentication method: ${this.config.method}`,
+              );
+          }
+
+          // Configurar la versión de la API
+          client.serverUrl = `${this.config.organizationUrl}?api-version=7.1`;
+
+          // Test the connection
+          const locationsApi = await client.getLocationsApi();
+          await locationsApi.getResourceAreas();
+
+          return client;
         } catch (error) {
-          // If it's already an AzureDevOpsError, rethrow it
           if (error instanceof AzureDevOpsError) {
             throw error;
           }
-          // Otherwise, wrap it in an AzureDevOpsAuthenticationError
           throw new AzureDevOpsAuthenticationError(
             error instanceof Error
               ? `Authentication failed: ${error.message}`
@@ -54,6 +83,36 @@ export class AzureDevOpsClient {
       })();
     }
     return this.clientPromise;
+  }
+
+  private async createPatClient(): Promise<WebApi> {
+    if (!this.config.personalAccessToken) {
+      throw new AzureDevOpsAuthenticationError(
+        'Personal Access Token is required',
+      );
+    }
+    const authHandler = getPersonalAccessTokenHandler(
+      this.config.personalAccessToken,
+    );
+    return new WebApi(this.config.organizationUrl, authHandler);
+  }
+
+  private async createAzureIdentityClient(): Promise<WebApi> {
+    const credential = new DefaultAzureCredential();
+    const token = await credential.getToken(
+      '499b84ac-1321-427f-aa17-267ca6975798/.default',
+    );
+    const authHandler = new BearerCredentialHandler(token.token);
+    return new WebApi(this.config.organizationUrl, authHandler);
+  }
+
+  private async createAzureCliClient(): Promise<WebApi> {
+    const credential = new AzureCliCredential();
+    const token = await credential.getToken(
+      '499b84ac-1321-427f-aa17-267ca6975798/.default',
+    );
+    const authHandler = new BearerCredentialHandler(token.token);
+    return new WebApi(this.config.organizationUrl, authHandler);
   }
 
   /**
