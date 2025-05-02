@@ -7,6 +7,8 @@ This document describes the tools available for working with Azure DevOps pipeli
 - [`list_pipelines`](#list_pipelines) - List pipelines in a project
 - [`get_pipeline`](#get_pipeline) - Get details of a specific pipeline
 - [`trigger_pipeline`](#trigger_pipeline) - Trigger a pipeline run
+- [`create_pipeline`](#create_pipeline) - Create a new pipeline
+- [`delete_pipeline`](#delete_pipeline) - Delete a pipeline
 
 ## list_pipelines
 
@@ -214,5 +216,99 @@ const runWithOptions = await callTool('trigger_pipeline', {
       isSecret: false,
     },
   },
+});
+```
+
+## create_pipeline
+
+Creates a new pipeline in a project.
+
+### Parameters
+
+| Parameter   | Type   | Required | Description                                               |
+| ----------- | ------ | -------- | --------------------------------------------------------- |
+| `projectId` | string | No       | The ID or name of the project (Default: from environment) |
+| `pipeline`  | object | Yes      | The pipeline object to create                              |
+
+### Response
+
+Returns a pipeline object with the created pipeline's details.
+
+### Error Handling
+
+- Returns `AzureDevOpsResourceNotFoundError` if the project does not exist
+- Returns `AzureDevOpsAuthenticationError` if authentication fails
+- Returns generic error messages for other failures
+
+### Example Usage
+
+```javascript
+// Create a new pipeline using default project from environment
+const result = await callTool('create_pipeline', {
+  pipeline: {
+    name: "New Pipeline",
+    folder: "\\",
+    configuration: {
+      path: "azure-pipelines.yml",
+      repository: {
+        id: "bd0e8130-7fba-4f3b-8559-54760b6e7248",
+        type: "azureReposGit"
+      },
+      type: "yaml"
+    }
+  }
+});
+
+// Create a new pipeline in a specific project
+const result = await callTool('create_pipeline', {
+  projectId: 'my-project',
+  pipeline: {
+    name: "New Pipeline",
+    folder: "\\",
+    configuration: {
+      path: "azure-pipelines.yml",
+      repository: {
+        id: "bd0e8130-7fba-4f3b-8559-54760b6e7248",
+        type: "azureReposGit"
+      },
+      type: "yaml"
+    }
+  }
+});
+```
+
+## delete_pipeline
+
+Deletes a pipeline from a project.
+
+### Parameters
+
+| Parameter   | Type   | Required | Description                                               |
+| ----------- | ------ | -------- | --------------------------------------------------------- |
+| `projectId` | string | No       | The ID or name of the project (Default: from environment) |
+| `pipelineId`| number | Yes      | The ID of the pipeline to delete                          |
+
+### Response
+
+Returns a success message if the pipeline was deleted successfully.
+
+### Error Handling
+
+- Returns `AzureDevOpsResourceNotFoundError` if the pipeline does not exist
+- Returns `AzureDevOpsAuthenticationError` if authentication fails
+- Returns generic error messages for other failures
+
+### Example Usage
+
+```javascript
+// Delete a pipeline using default project from environment
+const result = await callTool('delete_pipeline', {
+  pipelineId: 1,
+});
+
+// Delete a pipeline from a specific project
+const result = await callTool('delete_pipeline', {
+  projectId: 'my-project',
+  pipelineId: 1,
 });
 ```

@@ -1,17 +1,35 @@
 import { z } from 'zod';
+import { defaultProject } from '../../../utils/environment';
 
 export const CreatePipelineSchema = z.object({
-  projectId: z.string().optional(),
-  name: z.string(),
-  folder: z.string().optional(),
+  projectId: z
+    .string()
+    .optional()
+    .describe(`The ID or name of the project (Default: ${defaultProject})`),
+  name: z.string().describe('Name of the pipeline'),
+  folder: z.string().optional().describe('Folder of the pipeline'),
   configuration: z.object({
-    type: z.enum(['yaml', 'designerJson']),
-    path: z.string(),
+    type: z.enum([
+      'yaml',
+      'designerJson',
+      'designerHyphenJson',
+      'justInTime',
+      'unknown',
+    ]),
+    path: z
+      .string()
+      .optional()
+      .describe('Path to the pipeline configuration file'),
     repository: z.object({
-      id: z.string(),
-      type: z.enum(['git', 'github', 'bitbucket']),
-      name: z.string(),
-      defaultBranch: z.string().optional(),
+      id: z.string().describe('ID of the repository'),
+      type: z
+        .enum(['git', 'github', 'bitbucket', 'azureReposGit'])
+        .describe('Type of repository'),
+      name: z.string().describe('Name of the repository'),
+      defaultBranch: z
+        .string()
+        .optional()
+        .describe('Default branch of the repository'),
     }),
   }),
   variables: z
@@ -21,5 +39,6 @@ export const CreatePipelineSchema = z.object({
         isSecret: z.boolean().optional(),
       }),
     )
-    .optional(),
+    .optional()
+    .describe('Variables to be used in the pipeline'),
 });

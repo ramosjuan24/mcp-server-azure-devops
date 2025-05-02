@@ -44,11 +44,16 @@ export interface CreatePipelineOptions {
   name: string;
   folder?: string;
   configuration: {
-    type: 'yaml' | 'designerJson';
-    path: string;
+    type:
+      | 'yaml'
+      | 'designerJson'
+      | 'designerHyphenJson'
+      | 'justInTime'
+      | 'unknown';
+    path?: string;
     repository: {
       id: string;
-      type: 'git' | 'github' | 'bitbucket';
+      type: 'git' | 'github' | 'bitbucket' | 'azureReposGit';
       name: string;
       defaultBranch?: string;
     };

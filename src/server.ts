@@ -85,8 +85,11 @@ import {
   getPipeline,
   triggerPipeline,
   createPipeline,
+  deletePipeline,
   GetPipelineSchema,
   TriggerPipelineSchema,
+  CreatePipelineSchema,
+  DeletePipelineSchema,
 } from './features/pipelines';
 
 import { GitVersionType } from 'azure-devops-node-api/interfaces/GitInterfaces';
@@ -102,8 +105,6 @@ import {
   UpdateWikiPageSchema,
   updateWikiPage,
 } from './features/wikis';
-
-import { CreatePipelineSchema } from './features/pipelines/create-pipeline/schema';
 
 // Create a safe console logging function that won't interfere with MCP protocol
 function safeLog(message: string) {
@@ -205,6 +206,11 @@ export function createAzureDevOpsServer(config: AzureDevOpsConfig): Server {
           name: 'create_pipeline',
           description: 'Create a new pipeline in a project',
           inputSchema: zodToJsonSchema(CreatePipelineSchema),
+        },
+        {
+          name: 'delete_pipeline',
+          description: 'Delete a pipeline from a project',
+          inputSchema: zodToJsonSchema(DeletePipelineSchema),
         },
         {
           name: 'list_pipelines',
@@ -608,6 +614,16 @@ export function createAzureDevOpsServer(config: AzureDevOpsConfig): Server {
           });
           return {
             content: [{ type: 'text', text: JSON.stringify(result, null, 2) }],
+          };
+        }
+        case 'delete_pipeline': {
+          const args = DeletePipelineSchema.parse(request.params.arguments);
+          await deletePipeline(connection, {
+            projectId: args.projectId ?? defaultProject,
+            pipelineId: args.pipelineId,
+          });
+          return {
+            content: [{ type: 'text', text: 'Pipeline deleted successfully' }],
           };
         }
         case 'list_pipelines': {

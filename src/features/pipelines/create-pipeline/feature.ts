@@ -7,6 +7,22 @@ import {
   AzureDevOpsResourceNotFoundError,
 } from '../../../shared/errors';
 
+interface PipelineConfiguration {
+  name: string;
+  folder?: string;
+  configuration: {
+    type: ConfigurationType;
+    path?: string;
+    repository: {
+      id: string;
+      type: string;
+      name: string;
+      defaultBranch?: string;
+    };
+  };
+  variables?: Record<string, { value: string; isSecret?: boolean }>;
+}
+
 export async function createPipeline(
   connection: WebApi,
   options: CreatePipelineOptions,
@@ -14,7 +30,8 @@ export async function createPipeline(
   try {
     const pipelinesApi = await connection.getPipelinesApi();
 
-    const pipelineConfiguration = {
+    // Prepare pipeline configuration according to API documentation
+    const pipelineConfiguration: PipelineConfiguration = {
       name: options.name,
       folder: options.folder,
       configuration: {
@@ -28,6 +45,11 @@ export async function createPipeline(
         },
       },
     };
+
+    // Add variables if provided
+    if (options.variables) {
+      pipelineConfiguration.variables = options.variables;
+    }
 
     const result = await pipelinesApi.createPipeline(
       pipelineConfiguration,
