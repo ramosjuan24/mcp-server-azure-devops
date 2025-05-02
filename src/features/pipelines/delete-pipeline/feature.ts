@@ -15,9 +15,10 @@ export async function deletePipeline(
   options: DeletePipelineOptions,
 ): Promise<void> {
   try {
-    const pipelinesApi = await connection.getPipelinesApi();
-
-    await pipelinesApi.deletePipeline(options.projectId, options.pipelineId);
+    const client = connection.rest;
+    await client.del(
+      `/${options.projectId}/_apis/pipelines/${options.pipelineId}`,
+    );
   } catch (error) {
     if (error instanceof Error) {
       if (
