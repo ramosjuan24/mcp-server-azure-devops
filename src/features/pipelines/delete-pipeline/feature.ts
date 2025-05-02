@@ -17,30 +17,46 @@ export async function deletePipeline(
   try {
     const client = connection.rest;
     await client.del(
-      `/${options.projectId}/_apis/pipelines/${options.pipelineId}`,
+      `${connection.serverUrl}/${options.projectId}/_apis/pipelines/${options.pipelineId}?api-version=7.1`,
     );
   } catch (error) {
     if (error instanceof Error) {
+      const errorMessage = error.message;
+      const errorDetails = {
+        message: errorMessage,
+        stack: error.stack,
+        name: error.name,
+        ...(error as any).response?.data,
+        ...(error as any).response?.status,
+        ...(error as any).response?.statusText,
+      };
+
+      const detailedMessage = `Error details: ${JSON.stringify(errorDetails, null, 2)}`;
+
       if (
-        error.message.includes('Authentication') ||
-        error.message.includes('Unauthorized') ||
-        error.message.includes('401')
+        errorMessage.includes('Authentication') ||
+        errorMessage.includes('Unauthorized') ||
+        errorMessage.includes('401')
       ) {
         throw new AzureDevOpsAuthenticationError(
-          'Failed to authenticate with Azure DevOps',
+          `Failed to authenticate with Azure DevOps: ${errorMessage}\n${detailedMessage}`,
         );
       }
       if (
-        error.message.includes('not found') ||
-        error.message.includes('does not exist') ||
-        error.message.includes('404')
+        errorMessage.includes('not found') ||
+        errorMessage.includes('does not exist') ||
+        errorMessage.includes('404')
       ) {
         throw new AzureDevOpsResourceNotFoundError(
-          `Pipeline with ID ${options.pipelineId} not found`,
+          `Pipeline with ID ${options.pipelineId} not found: ${errorMessage}\n${detailedMessage}`,
         );
       }
-      throw new AzureDevOpsError(`Failed to delete pipeline: ${error.message}`);
+      throw new AzureDevOpsError(
+        `Failed to delete pipeline: ${errorMessage}\n${detailedMessage}`,
+      );
     }
-    throw new AzureDevOpsError('Failed to delete pipeline');
+    throw new AzureDevOpsError(
+      'Failed to delete pipeline: Unknown error occurred',
+    );
   }
 }
