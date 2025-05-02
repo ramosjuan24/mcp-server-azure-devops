@@ -61,3 +61,14 @@ Each tool documentation follows a consistent structure:
 ## Examples
 
 Examples of using multiple tools together can be found in the [Core Navigation Tools](./core-navigation.md#common-use-cases) documentation.
+
+# Herramientas de Azure DevOps
+
+Esta sección contiene la documentación de las herramientas disponibles para interactuar con Azure DevOps.
+
+## Índice
+
+- [Pipelines](./pipelines.md) - Herramientas para gestionar pipelines de Azure DevOps
+  - [Ejecución de Pipelines](./pipelines.md#ejecución-de-pipelines-en-azure-devops)
+  - [Creación de Pipelines](./pipelines.md#creación-de-pipelines)
+  - [Eliminación de Pipelines](./pipelines.md#eliminación-de-pipelines)
