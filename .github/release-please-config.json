@@ -2,7 +2,7 @@
   "packages": {
     ".": {
       "release-type": "node",
-      "package-name": "@tiberriver256/mcp-server-azure-devops",
+      "package-name": "@ramosjuan24/mcp-server-azure-devops",
       "changelog-path": "CHANGELOG.md",
       "bump-minor-pre-major": true,
       "bump-patch-for-minor-pre-major": true,

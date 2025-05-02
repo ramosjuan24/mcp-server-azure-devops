@@ -35,6 +35,9 @@ This directory contains documentation for all tools available in the Azure DevOp
 
 - [`create_pull_request`](./pull-requests.md#create_pull_request) - Create a new pull request
 - [`list_pull_requests`](./pull-requests.md#list_pull_requests) - List pull requests in a repository
+- [`add_pull_request_comment`](./pull-requests.md#add_pull_request_comment) - Add a comment to a pull request
+- [`get_pull_request_comments`](./pull-requests.md#get_pull_request_comments) - Get comments from a pull request
+- [`update_pull_request`](./pull-requests.md#update_pull_request) - Update an existing pull request (title, description, status, draft state, reviewers, work items)
 
 ### Work Item Tools
 
@@ -43,7 +46,7 @@ This directory contains documentation for all tools available in the Azure DevOp
 - [`list_work_items`](./work-items.md#list_work_items) - List work items in a project
 
 ### Pipeline Tools
-- [`create_pipeline`](./pipelines.md#create_pipeline) - Create pipelines in a project
+
 - [`list_pipelines`](./pipelines.md#list_pipelines) - List all pipelines in a project
 - [`get_pipeline`](./pipelines.md#get_pipeline) - Get details of a specific pipeline
 

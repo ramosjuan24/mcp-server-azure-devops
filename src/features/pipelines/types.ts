@@ -48,12 +48,20 @@ export interface CreatePipelineOptions {
     path: string;
     repository: {
       id: string;
-      type: 'git' | 'github' | 'bitbucket' | 'TfsGit' | 'azureReposGit';
+      type: 'git' | 'github' | 'bitbucket';
       name: string;
       defaultBranch?: string;
     };
   };
   variables?: Record<string, { value: string; isSecret?: boolean }>;
+}
+
+/**
+ * Options for deleting a pipeline
+ */
+export interface DeletePipelineOptions {
+  projectId: string;
+  pipelineId: number;
 }
 
 export { Pipeline, Run };

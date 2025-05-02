@@ -4,61 +4,9 @@ This document describes the tools available for working with Azure DevOps pipeli
 
 ## Table of Contents
 
-- [`create_pipeline`](#create_pipeline) - Create pipelines in a project
 - [`list_pipelines`](#list_pipelines) - List pipelines in a project
 - [`get_pipeline`](#get_pipeline) - Get details of a specific pipeline
 - [`trigger_pipeline`](#trigger_pipeline) - Trigger a pipeline run
-
-## create_pipeline
-
-Create pipelines in a project.
-
-### Parameters
-
-### Example Usage
-```json
-{
-  "name": "Mi Pipeline de Prueba",
-  "projectId": "tu-project-id",
-  "folder": "Carpeta/Pipelines",
-  "configuration": {
-    "type": "yaml",
-    "path": "azure-pipelines.yml",
-    "repository": {
-      "id": "tu-repo-id",
-      "type": "git",
-      "name": "tu-repo-name",
-      "defaultBranch": "main"
-    }
-  },
-  "variables": {
-    "VARIABLE1": {
-      "value": "valor1",
-      "isSecret": false
-    },
-    "VARIABLE2": {
-      "value": "valor2",
-      "isSecret": true
-    }
-  }
-```
-
-```javascript
-// Using default project from environment
-const result = await mcpClient.callTool('create_pipeline', {
-  name: 'Mi Pipeline',
-  configuration: {
-    type: 'yaml',
-    path: '/azure-pipelines.yml',
-    repository: {
-      id: 'mi-repo-id',
-      type: 'git',
-      name: 'mi-repo'
-    }
-  }
-});
-```
-
 
 ## list_pipelines
 
