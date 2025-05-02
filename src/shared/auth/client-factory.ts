@@ -1,4 +1,4 @@
-import { WebApi } from 'azure-devops-node-api';
+import { WebApi, getPersonalAccessTokenHandler } from 'azure-devops-node-api';
 import { ICoreApi } from 'azure-devops-node-api/CoreApi';
 import { IGitApi } from 'azure-devops-node-api/GitApi';
 import { IWorkItemTrackingApi } from 'azure-devops-node-api/WorkItemTrackingApi';
@@ -7,14 +7,10 @@ import { ITestApi } from 'azure-devops-node-api/TestApi';
 import { IReleaseApi } from 'azure-devops-node-api/ReleaseApi';
 import { ITaskAgentApi } from 'azure-devops-node-api/TaskAgentApi';
 import { ITaskApi } from 'azure-devops-node-api/TaskApi';
+import { BearerCredentialHandler } from 'azure-devops-node-api/handlers/bearertoken';
+import { DefaultAzureCredential, AzureCliCredential } from '@azure/identity';
 import { AzureDevOpsError, AzureDevOpsAuthenticationError } from '../errors';
 import { AuthConfig, AuthenticationMethod } from './auth-factory';
-import {
-  getPersonalAccessTokenHandler,
-  DefaultAzureCredential,
-  BearerCredentialHandler,
-  AzureCliCredential,
-} from '@azure/identity';
 
 /**
  * Azure DevOps Client
